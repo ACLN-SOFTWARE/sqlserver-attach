@@ -52,7 +52,7 @@ export function scanDirectory(basePath) {
     const mdfNameLower = mdfName.toLowerCase();
 
     // Look for a matching LDF in the same directory
-    // Typically LDF is named like MDF, e.g. "escola.mdf" and "escola_log.ldf"
+    // Typically LDF is named like MDF, e.g. "db_cliente.mdf" and "db_cliente_log.ldf"
     let matchingLdf = ldfFiles.find((ldf) => {
       return (
         path.dirname(ldf) === dir &&

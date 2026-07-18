@@ -17,7 +17,9 @@ describe('validator', () => {
     fs.statSync.mockReturnValue({ size: 1000 });
     fs.accessSync.mockImplementation(() => {});
 
-    const dbs = [{ name: 'escola', mdf: 'path/escola.mdf', ldf: 'path/escola_log.ldf' }];
+    const dbs = [
+      { name: 'db_cliente', mdf: 'path/db_cliente.mdf', ldf: 'path/db_cliente_log.ldf' },
+    ];
     const result = validateDatabases(dbs);
 
     expect(result.valid).toHaveLength(1);
@@ -28,7 +30,9 @@ describe('validator', () => {
   it('should invalidate if mdf is missing', () => {
     fs.existsSync.mockImplementation((file) => file.endsWith('.ldf'));
 
-    const dbs = [{ name: 'escola', mdf: 'path/escola.mdf', ldf: 'path/escola_log.ldf' }];
+    const dbs = [
+      { name: 'db_cliente', mdf: 'path/db_cliente.mdf', ldf: 'path/db_cliente_log.ldf' },
+    ];
     const result = validateDatabases(dbs);
 
     expect(result.valid).toHaveLength(0);
@@ -41,7 +45,9 @@ describe('validator', () => {
     fs.statSync.mockReturnValue({ size: 0 });
     fs.accessSync.mockImplementation(() => {});
 
-    const dbs = [{ name: 'escola', mdf: 'path/escola.mdf', ldf: 'path/escola_log.ldf' }];
+    const dbs = [
+      { name: 'db_cliente', mdf: 'path/db_cliente.mdf', ldf: 'path/db_cliente_log.ldf' },
+    ];
     const result = validateDatabases(dbs);
 
     expect(result.valid).toHaveLength(0);

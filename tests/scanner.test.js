@@ -33,18 +33,18 @@ describe('scanner', () => {
 
     // Mock entries matching Node 22 fs.readdirSync(..., {withFileTypes: true})
     fs.readdirSync.mockReturnValue([
-      { name: 'escola.mdf', isFile: () => true, parentPath: '/path' },
-      { name: 'escola_log.ldf', isFile: () => true, parentPath: '/path' },
+      { name: 'db_cliente.mdf', isFile: () => true, parentPath: '/path' },
+      { name: 'db_cliente_log.ldf', isFile: () => true, parentPath: '/path' },
       { name: 'other.txt', isFile: () => true, parentPath: '/path' },
       { name: 'alone.mdf', isFile: () => true, parentPath: '/path' }, // missing LDF
-      { name: 'dummy.ldf', isFile: () => true, parentPath: '/path' }, // extra LDF to avoid fallback pairing alone.mdf with escola_log.ldf
+      { name: 'dummy.ldf', isFile: () => true, parentPath: '/path' }, // extra LDF to avoid fallback pairing alone.mdf with db_cliente_log.ldf
     ]);
 
     const result = scanDirectory('/path');
 
     expect(result).toHaveLength(1);
-    expect(result[0].name).toBe('escola');
-    expect(result[0].mdf.replace(/\\/g, '/')).toBe('/path/escola.mdf');
-    expect(result[0].ldf.replace(/\\/g, '/')).toBe('/path/escola_log.ldf');
+    expect(result[0].name).toBe('db_cliente');
+    expect(result[0].mdf.replace(/\\/g, '/')).toBe('/path/db_cliente.mdf');
+    expect(result[0].ldf.replace(/\\/g, '/')).toBe('/path/db_cliente_log.ldf');
   });
 });

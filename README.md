@@ -67,7 +67,7 @@ node cli.js /backups/ClienteA
 - **Definir um nome específico (se a pasta possuir apenas 1 banco)**:
 
   ```bash
-  node cli.js /backups/ClienteA --name EscolaNova
+  node cli.js /backups/ClienteA --name BancoNovo
   ```
 
 - **Definir concorrência (ex: 5 restaurações simultâneas)**:
