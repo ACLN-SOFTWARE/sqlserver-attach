@@ -32,9 +32,7 @@ describe('docker extended', () => {
     mockSpawn.emit('close', 0);
 
     await expect(promise).resolves.toBeUndefined();
-    expect(child_process.execSync).toHaveBeenCalledWith(
-      expect.stringContaining('chown mssql:root')
-    );
+    expect(child_process.execSync).toHaveBeenCalledWith(expect.stringContaining('chown 10001:0'));
   });
 
   it('copyFilesToContainer should reject on failure', async () => {

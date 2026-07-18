@@ -27,14 +27,16 @@ describe('docker', () => {
 
   it('startContainer should call docker start', () => {
     startContainer('sql1');
-    expect(child_process.execSync).toHaveBeenCalledWith('docker start sql1');
+    expect(child_process.execSync).toHaveBeenCalledWith(
+      expect.stringMatching(/docker(\.exe)? start sql1/)
+    );
   });
 
   it('runNewContainer should call docker run with correct arguments', () => {
     runNewContainer('sql1', 'pass123', 1433);
     expect(child_process.execSync).toHaveBeenCalledWith(
-      expect.stringContaining(
-        'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=pass123" -p 1433:1433'
+      expect.stringMatching(
+        /docker(\.exe)? run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=pass123" -p 1433:1433/
       )
     );
   });

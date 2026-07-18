@@ -1,0 +1,10 @@
+container: sqlserver
+host: localhost
+port: 1433
+user: sa
+password: 'abc@1234'
+sqlPath: /var/opt/mssql/data
+parallel: 3
+cleanup: true
+replace: false
+waitTimeout: 180
