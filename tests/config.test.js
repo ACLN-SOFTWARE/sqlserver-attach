@@ -7,7 +7,7 @@ vi.mock('../logger.js', () => ({
   logger: {
     debug: vi.fn(),
     error: vi.fn(),
-  }
+  },
 }));
 
 describe('config', () => {
@@ -17,10 +17,10 @@ describe('config', () => {
 
   it('should load defaults when no config file and no cli args', () => {
     fs.existsSync.mockReturnValue(false);
-    
+
     // Minimal valid CLI args to pass zod schema
     const config = loadConfig({ password: 'test' }, 'notfound.yml');
-    
+
     expect(config.host).toBe('localhost');
     expect(config.port).toBe(1433);
     expect(config.user).toBe('sa');
@@ -37,7 +37,7 @@ describe('config', () => {
     `);
 
     const config = loadConfig({ parallel: 5 }, 'found.yml');
-    
+
     expect(config.host).toBe('yamlhost');
     expect(config.port).toBe(1434);
     expect(config.parallel).toBe(5); // from CLI
@@ -46,17 +46,19 @@ describe('config', () => {
 
   it('should throw on invalid config', () => {
     fs.existsSync.mockReturnValue(false);
-    
+
     expect(() => {
       // missing password
       loadConfig({}, 'notfound.yml');
     }).toThrow('Invalid configuration');
   });
-  
+
   it('should throw on malformed yaml', () => {
     fs.existsSync.mockReturnValue(true);
-    fs.readFileSync.mockImplementation(() => { throw new Error('yaml parse error'); });
-    
+    fs.readFileSync.mockImplementation(() => {
+      throw new Error('yaml parse error');
+    });
+
     expect(() => {
       loadConfig({ password: 'test' }, 'found.yml');
     }).toThrow('Failed to parse config file');

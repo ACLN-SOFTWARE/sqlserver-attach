@@ -8,7 +8,7 @@ export default defineConfig({
       provider: 'v8',
       reporter: ['text', 'json', 'html'],
       include: ['*.js'],
-      exclude: ['node_modules/**', 'vitest.config.js', 'test/**']
-    }
-  }
+      exclude: ['node_modules/**', 'vitest.config.js', 'test/**'],
+    },
+  },
 });

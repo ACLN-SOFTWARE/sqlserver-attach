@@ -4,7 +4,7 @@ import fs from 'fs';
 
 vi.mock('fs');
 vi.mock('../logger.js', () => ({
-  logger: { error: vi.fn() }
+  logger: { error: vi.fn() },
 }));
 
 describe('validator', () => {
@@ -27,7 +27,7 @@ describe('validator', () => {
 
   it('should invalidate if mdf is missing', () => {
     fs.existsSync.mockImplementation((file) => file.endsWith('.ldf'));
-    
+
     const dbs = [{ name: 'escola', mdf: 'path/escola.mdf', ldf: 'path/escola_log.ldf' }];
     const result = validateDatabases(dbs);
 
@@ -40,7 +40,7 @@ describe('validator', () => {
     fs.existsSync.mockReturnValue(true);
     fs.statSync.mockReturnValue({ size: 0 });
     fs.accessSync.mockImplementation(() => {});
-    
+
     const dbs = [{ name: 'escola', mdf: 'path/escola.mdf', ldf: 'path/escola_log.ldf' }];
     const result = validateDatabases(dbs);
 

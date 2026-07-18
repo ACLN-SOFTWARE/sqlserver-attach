@@ -19,7 +19,7 @@ const configSchema = z.object({
 
 export function loadConfig(cliArgs = {}, configPath = 'sqlattach.yml') {
   let yamlConfig = {};
-  
+
   const fullPath = path.resolve(configPath);
   if (fs.existsSync(fullPath)) {
     try {
@@ -41,7 +41,7 @@ export function loadConfig(cliArgs = {}, configPath = 'sqlattach.yml') {
   };
 
   // Remove undefined values to avoid overwriting defaults incorrectly
-  Object.keys(mergedConfig).forEach(key => {
+  Object.keys(mergedConfig).forEach((key) => {
     if (mergedConfig[key] === undefined) {
       delete mergedConfig[key];
     }

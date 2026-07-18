@@ -4,13 +4,13 @@ import { logger } from './logger.js';
 
 export function scanDirectory(basePath) {
   const result = [];
-  
+
   if (!fs.existsSync(basePath)) {
     throw new Error(`Directory not found: ${basePath}`);
   }
 
   const stat = fs.statSync(basePath);
-  
+
   if (!stat.isDirectory()) {
     throw new Error(`Path is not a directory: ${basePath}`);
   }
@@ -26,14 +26,14 @@ export function scanDirectory(basePath) {
       // Depending on Node version, entry.parentPath might be available, otherwise we use path.join
       // fs.readdirSync with recursive: true in Node 20+ returns objects where entry.path or entry.parentPath points to the dir
       const dirPath = entry.path || entry.parentPath || basePath; // fallback to basePath if recursive isn't fully supported in object
-      
+
       let fullPath;
       if (entry.path || entry.parentPath) {
-          fullPath = path.join(entry.path || entry.parentPath, entry.name);
+        fullPath = path.join(entry.path || entry.parentPath, entry.name);
       } else {
-          // If recursive doesn't give path (older node, though Node 22 does), we'd need a custom walk.
-          // Since we use Node 22+, entry.parentPath or entry.path is present.
-          fullPath = path.join(dirPath, entry.name);
+        // If recursive doesn't give path (older node, though Node 22 does), we'd need a custom walk.
+        // Since we use Node 22+, entry.parentPath or entry.path is present.
+        fullPath = path.join(dirPath, entry.name);
       }
 
       const ext = path.extname(entry.name).toLowerCase();
@@ -53,14 +53,16 @@ export function scanDirectory(basePath) {
 
     // Look for a matching LDF in the same directory
     // Typically LDF is named like MDF, e.g. "escola.mdf" and "escola_log.ldf"
-    let matchingLdf = ldfFiles.find(ldf => {
-        return path.dirname(ldf) === dir && 
-               path.basename(ldf, '.ldf').toLowerCase().startsWith(mdfNameLower);
+    let matchingLdf = ldfFiles.find((ldf) => {
+      return (
+        path.dirname(ldf) === dir &&
+        path.basename(ldf, '.ldf').toLowerCase().startsWith(mdfNameLower)
+      );
     });
 
     if (!matchingLdf) {
       // fallback: just find any ldf in the same dir if there's only one
-      const ldfsInDir = ldfFiles.filter(ldf => path.dirname(ldf) === dir);
+      const ldfsInDir = ldfFiles.filter((ldf) => path.dirname(ldf) === dir);
       if (ldfsInDir.length === 1) {
         matchingLdf = ldfsInDir[0];
       }

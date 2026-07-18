@@ -8,7 +8,7 @@ vi.mock('../logger.js', () => ({
     debug: vi.fn(),
     warn: vi.fn(),
     error: vi.fn(),
-  }
+  },
 }));
 
 describe('scanner', () => {
@@ -41,7 +41,7 @@ describe('scanner', () => {
     ]);
 
     const result = scanDirectory('/path');
-    
+
     expect(result).toHaveLength(1);
     expect(result[0].name).toBe('escola');
     expect(result[0].mdf.replace(/\\/g, '/')).toBe('/path/escola.mdf');

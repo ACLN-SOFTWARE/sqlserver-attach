@@ -28,14 +28,13 @@ export function validateDatabases(databases) {
       valid.push({
         ...db,
         mdfSize: mdfStat.size,
-        ldfSize: ldfStat.size
+        ldfSize: ldfStat.size,
       });
-      
     } catch (err) {
       logger.error(`Validation failed for database ${db.name}: ${err.message}`);
       invalid.push({
         ...db,
-        error: err.message
+        error: err.message,
       });
     }
   }

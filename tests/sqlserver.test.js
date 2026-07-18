@@ -4,7 +4,7 @@ import sql from 'mssql';
 
 vi.mock('mssql');
 vi.mock('../logger.js', () => ({
-  logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }
+  logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
 }));
 
 describe('sqlserver', () => {
@@ -24,38 +24,43 @@ describe('sqlserver', () => {
   it('attachDatabase should execute CREATE DATABASE FOR ATTACH', async () => {
     const mockRequest = {
       query: vi.fn().mockResolvedValue({ recordset: [] }),
-      input: vi.fn().mockReturnThis()
+      input: vi.fn().mockReturnThis(),
     };
     const mockPool = {
       request: vi.fn().mockReturnValue(mockRequest),
-      close: vi.fn()
+      close: vi.fn(),
     };
     sql.connect.mockResolvedValue(mockPool);
 
     await attachDatabase({}, 'mydb', 'path/to/mdf', 'path/to/ldf');
 
-    expect(mockRequest.query).toHaveBeenCalledWith(expect.stringContaining('CREATE DATABASE [mydb]'));
+    expect(mockRequest.query).toHaveBeenCalledWith(
+      expect.stringContaining('CREATE DATABASE [mydb]')
+    );
     expect(mockRequest.query).toHaveBeenCalledWith(expect.stringContaining('FOR ATTACH'));
     expect(mockPool.close).toHaveBeenCalled();
   });
 
   it('attachDatabase should replace DB if option is set', async () => {
     const mockRequest = {
-      query: vi.fn()
+      query: vi
+        .fn()
         .mockResolvedValueOnce({ recordset: [{ name: 'mydb' }] }) // SELECT query
         .mockResolvedValueOnce({}) // ALTER/DROP query
         .mockResolvedValueOnce({}), // CREATE query
-      input: vi.fn().mockReturnThis()
+      input: vi.fn().mockReturnThis(),
     };
     const mockPool = {
       request: vi.fn().mockReturnValue(mockRequest),
-      close: vi.fn()
+      close: vi.fn(),
     };
     sql.connect.mockResolvedValue(mockPool);
 
     await attachDatabase({ replace: true }, 'mydb', 'path/to/mdf', 'path/to/ldf');
 
     expect(mockRequest.query).toHaveBeenCalledWith(expect.stringContaining('DROP DATABASE [mydb]'));
-    expect(mockRequest.query).toHaveBeenCalledWith(expect.stringContaining('CREATE DATABASE [mydb]'));
+    expect(mockRequest.query).toHaveBeenCalledWith(
+      expect.stringContaining('CREATE DATABASE [mydb]')
+    );
   });
 });

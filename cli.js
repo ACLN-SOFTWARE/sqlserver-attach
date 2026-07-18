@@ -22,21 +22,21 @@ program
     try {
       const fullPath = path.resolve(targetPath);
       logger.info(`Starting sqlattach on path: ${fullPath}`);
-      
+
       const config = loadConfig({
         replace: options.replace,
         parallel: options.parallel,
-        container: options.container
+        container: options.container,
       });
 
       const result = await runAttach(fullPath, config, options);
-      
+
       console.log('\n════════════════════════════════════');
       console.log(` Tempo........ ${Math.round(result.timeMs / 1000)} s`);
       console.log(` Sucesso...... ${result.success}`);
       console.log(` Falha........ ${result.failed}`);
       console.log('════════════════════════════════════\n');
-      
+
       if (result.failed > 0) {
         process.exit(1);
       }

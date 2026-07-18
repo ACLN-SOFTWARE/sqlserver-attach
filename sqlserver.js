@@ -4,7 +4,7 @@ import { logger } from './logger.js';
 export async function waitForSqlServer(config) {
   const timeoutMs = config.waitTimeout * 1000;
   const start = Date.now();
-  
+
   const sqlConfig = {
     user: config.user,
     password: config.password,
@@ -15,11 +15,11 @@ export async function waitForSqlServer(config) {
       encrypt: false,
       trustServerCertificate: true,
       connectTimeout: 5000,
-    }
+    },
   };
 
   logger.info('Waiting for SQL Server to accept connections...');
-  
+
   while (Date.now() - start < timeoutMs) {
     try {
       const pool = await sql.connect(sqlConfig);
@@ -28,7 +28,7 @@ export async function waitForSqlServer(config) {
       return;
     } catch (err) {
       logger.debug(`SQL Server not ready yet: ${err.message}`);
-      await new Promise(res => setTimeout(res, 2000)); // wait 2s before retry
+      await new Promise((res) => setTimeout(res, 2000)); // wait 2s before retry
     }
   }
 
@@ -46,19 +46,20 @@ export async function attachDatabase(config, dbName, mdfPath, ldfPath) {
       encrypt: false,
       trustServerCertificate: true,
       requestTimeout: 120000, // 2 minutes for attach operations
-    }
+    },
   };
 
   let pool;
   try {
     pool = await sql.connect(sqlConfig);
-    
+
     if (config.replace) {
       // Check if DB exists
-      const checkResult = await pool.request()
+      const checkResult = await pool
+        .request()
         .input('dbName', sql.NVarChar, dbName)
         .query('SELECT name FROM sys.databases WHERE name = @dbName');
-        
+
       if (checkResult.recordset.length > 0) {
         logger.info(`Database ${dbName} exists. Replacing...`);
         // Drop it safely
@@ -78,10 +79,9 @@ export async function attachDatabase(config, dbName, mdfPath, ldfPath) {
          (FILENAME = '${ldfPath}')
       FOR ATTACH;
     `;
-    
+
     await pool.request().query(query);
     logger.info(`Database ${dbName} attached successfully.`);
-    
   } finally {
     if (pool) {
       await pool.close();

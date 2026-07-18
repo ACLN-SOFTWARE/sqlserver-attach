@@ -5,7 +5,7 @@ import child_process from 'child_process';
 vi.mock('child_process');
 vi.mock('tar-fs');
 vi.mock('../logger.js', () => ({
-  logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() }
+  logger: { info: vi.fn(), warn: vi.fn(), error: vi.fn(), debug: vi.fn() },
 }));
 
 describe('docker', () => {
@@ -19,7 +19,9 @@ describe('docker', () => {
   });
 
   it('getContainerStatus should return null if not found', () => {
-    child_process.execSync.mockImplementation(() => { throw new Error('Not found'); });
+    child_process.execSync.mockImplementation(() => {
+      throw new Error('Not found');
+    });
     expect(getContainerStatus('sql1')).toBeNull();
   });
 
@@ -31,7 +33,9 @@ describe('docker', () => {
   it('runNewContainer should call docker run with correct arguments', () => {
     runNewContainer('sql1', 'pass123', 1433);
     expect(child_process.execSync).toHaveBeenCalledWith(
-      expect.stringContaining('docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=pass123" -p 1433:1433')
+      expect.stringContaining(
+        'docker run -e "ACCEPT_EULA=Y" -e "MSSQL_SA_PASSWORD=pass123" -p 1433:1433'
+      )
     );
   });
 });

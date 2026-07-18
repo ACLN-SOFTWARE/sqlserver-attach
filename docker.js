@@ -2,11 +2,14 @@ import { execSync, spawn } from 'child_process';
 import tar from 'tar-fs';
 import path from 'path';
 import { logger } from './logger.js';
-import fs from 'fs';
 
 export function getContainerStatus(containerName) {
   try {
-    const output = execSync(`docker inspect -f "{{.State.Status}}" ${containerName}`, { stdio: 'pipe' }).toString().trim();
+    const output = execSync(`docker inspect -f "{{.State.Status}}" ${containerName}`, {
+      stdio: 'pipe',
+    })
+      .toString()
+      .trim();
     return output; // 'running', 'exited', etc.
   } catch (err) {
     return null; // Not found
@@ -26,20 +29,22 @@ export function runNewContainer(containerName, password, port) {
 
 export async function copyFilesToContainer(containerName, files, targetPath) {
   return new Promise((resolve, reject) => {
-    logger.info(`Copying ${files.length} files to container ${containerName}:${targetPath} using tar stream`);
-    
+    logger.info(
+      `Copying ${files.length} files to container ${containerName}:${targetPath} using tar stream`
+    );
+
     // Ensure target path exists in container
     try {
       execSync(`docker exec ${containerName} mkdir -p ${targetPath}`);
-    } catch(e) {
+    } catch (e) {
       logger.warn(`Failed to create directory ${targetPath} in container. It may already exist.`);
     }
 
     // Set up docker exec command to receive the tar stream
     const dockerTar = spawn('docker', ['exec', '-i', containerName, 'tar', 'x', '-C', targetPath], {
-      stdio: ['pipe', 'pipe', 'pipe']
+      stdio: ['pipe', 'pipe', 'pipe'],
     });
-    
+
     dockerTar.stderr.on('data', (data) => {
       logger.debug(`Docker tar stderr: ${data.toString()}`);
     });
@@ -47,15 +52,17 @@ export async function copyFilesToContainer(containerName, files, targetPath) {
     dockerTar.on('close', (code) => {
       if (code === 0) {
         logger.info('Files copied successfully.');
-        
+
         // Change ownership to mssql user so SQL server can access the files
         try {
-          execSync(`docker exec ${containerName} chown mssql:root ${targetPath}/*.mdf ${targetPath}/*.ldf`);
+          execSync(
+            `docker exec ${containerName} chown mssql:root ${targetPath}/*.mdf ${targetPath}/*.ldf`
+          );
           logger.debug('Permissions updated to mssql:root');
-        } catch(chownErr) {
+        } catch (chownErr) {
           logger.warn(`Failed to update permissions: ${chownErr.message}`);
         }
-        
+
         resolve();
       } else {
         reject(new Error(`docker tar process exited with code ${code}`));
@@ -66,12 +73,12 @@ export async function copyFilesToContainer(containerName, files, targetPath) {
     // tar-fs packs a directory, but we have specific scattered files.
     // We can map them into the tar stream.
     const mapToTar = tar.pack(process.cwd(), {
-      entries: files.map(f => path.relative(process.cwd(), f)),
+      entries: files.map((f) => path.relative(process.cwd(), f)),
       map: (header) => {
         // Place them at the root of the extracted tar (which is targetPath)
         header.name = path.basename(header.name);
         return header;
-      }
+      },
     });
 
     mapToTar.on('error', (err) => {

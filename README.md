@@ -8,10 +8,10 @@ Se você possui backups antigos baseados em arquivos brutos do SQL Server (`.mdf
 
 O **sqlattach** resolve isso em um único comando:
 
-* **Varredura Inteligente:** Encontra pares MDF/LDF recursivamente em suas pastas.
-* **Stream Direto:** Usa *Tar Streams* para transferir os arquivos diretamente para o *filesystem* do container de forma extremamente rápida, preservando permissões (`chown`).
-* **Conexão Nativa:** Conecta ao banco de dados via Node (`mssql` na porta 1433) sem depender de ferramentas instaladas dentro do container como o `sqlcmd`.
-* **Alta Performance:** Suporta execuções **paralelas** restaurando dezenas de bancos ao mesmo tempo.
+- **Varredura Inteligente:** Encontra pares MDF/LDF recursivamente em suas pastas.
+- **Stream Direto:** Usa _Tar Streams_ para transferir os arquivos diretamente para o _filesystem_ do container de forma extremamente rápida, preservando permissões (`chown`).
+- **Conexão Nativa:** Conecta ao banco de dados via Node (`mssql` na porta 1433) sem depender de ferramentas instaladas dentro do container como o `sqlcmd`.
+- **Alta Performance:** Suporta execuções **paralelas** restaurando dezenas de bancos ao mesmo tempo.
 
 ## Requisitos
 
@@ -22,22 +22,25 @@ O **sqlattach** resolve isso em um único comando:
 ## Instalação
 
 Dentro do projeto:
+
 ```bash
 npm install
 ```
-*(Você pode torná-lo executável globalmente com `npm link` ou executá-lo através do Node diretamente).*
+
+_(Você pode torná-lo executável globalmente com `npm link` ou executá-lo através do Node diretamente)._
 
 ## Configuração (`sqlattach.yml`)
 
 A ferramenta aceita parâmetros por linha de comando ou através de um arquivo `sqlattach.yml` na pasta atual de onde o comando é executado.
 
 Exemplo de `sqlattach.yml`:
+
 ```yaml
 container: sqlserver
 host: localhost
 port: 1433
 user: sa
-password: "SuaSenhaSuperSegura123!"
+password: 'SuaSenhaSuperSegura123!'
 sqlPath: /var/opt/mssql/data
 parallel: 3
 cleanup: true
@@ -56,16 +59,19 @@ node cli.js /backups/ClienteA
 ### Argumentos Comuns (Sobrescrevem o YML)
 
 - **Restaurar e substituir bases que já existam com o mesmo nome**:
+
   ```bash
   node cli.js /backups --replace
   ```
 
 - **Definir um nome específico (se a pasta possuir apenas 1 banco)**:
+
   ```bash
   node cli.js /backups/ClienteA --name EscolaNova
   ```
 
 - **Definir concorrência (ex: 5 restaurações simultâneas)**:
+
   ```bash
   node cli.js /backups --parallel 5
   ```
@@ -77,14 +83,14 @@ node cli.js /backups/ClienteA
 
 ## Estrutura do Projeto
 
-* `cli.js`: Ponto de entrada.
-* `config.js`: Parse de YML e validação Zod.
-* `scanner.js`: Varredura recursiva de diretórios.
-* `validator.js`: Valida existência e tamanho dos arquivos.
-* `docker.js`: Detecção, criação de containers e transferências via Tar Stream.
-* `sqlserver.js`: Interação via T-SQL para drop e attach.
-* `attach.js`: Orquestrador com fila de execução paralela.
-* `logger.js`: Motor de logs utilizando o *Pino*.
+- `cli.js`: Ponto de entrada.
+- `config.js`: Parse de YML e validação Zod.
+- `scanner.js`: Varredura recursiva de diretórios.
+- `validator.js`: Valida existência e tamanho dos arquivos.
+- `docker.js`: Detecção, criação de containers e transferências via Tar Stream.
+- `sqlserver.js`: Interação via T-SQL para drop e attach.
+- `attach.js`: Orquestrador com fila de execução paralela.
+- `logger.js`: Motor de logs utilizando o _Pino_.
 
 ## Testes e Cobertura
 
@@ -95,6 +101,7 @@ npm run test
 ```
 
 Para exibir a tabela de cobertura:
+
 ```bash
 npm run coverage
 ```

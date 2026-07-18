@@ -28,9 +28,9 @@ export const logger = pino({
         target: 'pino/file',
         options: {
           destination: logFile,
-          mkdir: true
-        }
-      }
-    ]
+          mkdir: true,
+        },
+      },
+    ],
   },
 });
